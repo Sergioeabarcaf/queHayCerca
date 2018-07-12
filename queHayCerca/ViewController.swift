@@ -9,13 +9,23 @@
 import UIKit
 import SpriteKit
 import ARKit
+import CoreLocation
+import GameplayKit
 
-class ViewController: UIViewController, ARSKViewDelegate {
+class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDelegate {
     
     @IBOutlet var sceneView: ARSKView!
     
+    let locationManager = CLLocationManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        locationManager.delegate = self
+        //Obtener la posicion exacta del telefono, pero aumenta el consumo de bateria.
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        //Pedirle permisos al usuario para usar el GPS
+        locationManager.requestWhenInUseAuthorization()
         
         // Set the view's delegate
         sceneView.delegate = self
