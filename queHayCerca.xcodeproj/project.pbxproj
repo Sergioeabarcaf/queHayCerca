@@ -14,6 +14,7 @@
 		0616F0B320F76BAB004CCC5C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0616F0B120F76BAB004CCC5C /* Main.storyboard */; };
 		0616F0B520F76BAD004CCC5C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0616F0B420F76BAD004CCC5C /* Assets.xcassets */; };
 		0616F0B820F76BAD004CCC5C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0616F0B620F76BAD004CCC5C /* LaunchScreen.storyboard */; };
+		0616F0C020F76D8D004CCC5C /* SwiftJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0616F0BF20F76D8D004CCC5C /* SwiftJSON.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		0616F0B420F76BAD004CCC5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0616F0B720F76BAD004CCC5C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0616F0B920F76BAD004CCC5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0616F0BF20F76D8D004CCC5C /* SwiftJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftJSON.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 		0616F0A820F76BAB004CCC5C /* queHayCerca */ = {
 			isa = PBXGroup;
 			children = (
+				0616F0BF20F76D8D004CCC5C /* SwiftJSON.swift */,
 				0616F0A920F76BAB004CCC5C /* AppDelegate.swift */,
 				0616F0AB20F76BAB004CCC5C /* Scene.sks */,
 				0616F0AD20F76BAB004CCC5C /* Scene.swift */,
@@ -143,6 +146,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0616F0B020F76BAB004CCC5C /* ViewController.swift in Sources */,
+				0616F0C020F76D8D004CCC5C /* SwiftJSON.swift in Sources */,
 				0616F0AE20F76BAB004CCC5C /* Scene.swift in Sources */,
 				0616F0AA20F76BAB004CCC5C /* AppDelegate.swift in Sources */,
 			);
