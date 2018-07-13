@@ -102,7 +102,7 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         //Pregunta si la autorizacion del usuario es permitida
-        print("status es: \(status)")
+        print("status es: \(CLLocationManager.authorizationStatus().rawValue)")
         if status == .authorizedWhenInUse{
             locationManager.requestLocation()
         }
