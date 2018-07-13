@@ -19,19 +19,21 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     let locationManager = CLLocationManager()
     var userLocation = CLLocation()
     
+    //ViewDidLoad prepara las configuraciones necesarias antes de que sea cargada la app
     override func viewDidLoad() {
         super.viewDidLoad()
         
+    //Configurar LocationManager
         locationManager.delegate = self
-        //Obtener la posicion exacta del telefono, pero aumenta el consumo de bateria.
+        //kCLLocaitonAccurancyBest Configura para pedir la posicion exacta del telefono, pero aumenta el consumo de bateria.
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        //Pedirle permisos al usuario para usar el GPS
+        //Se almacenan los permisos que entrego el usuario.
         locationManager.requestWhenInUseAuthorization()
         
-        // Set the view's delegate
+    //Configurar la escena
         sceneView.delegate = self
         
-        // Show statistics such as fps and node count
+        // Mostrar por pantalla los siguientes parametros
         sceneView.showsFPS = true
         sceneView.showsNodeCount = true
         sceneView.showsQuadCount = true
@@ -40,26 +42,28 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
         sceneView.showsFields = true
         
         
-        // Load the SKScene from 'Scene.sks'
+        // Cargar la escena
         if let scene = SKScene(fileNamed: "Scene") {
             sceneView.presentScene(scene)
         }
     }
     
+    //viewWillAppear es llamado luego que se carga en memoria la APP, con eso se preparan los objetos que seran mostrados en la vista
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        // Create a session configuration
+        // Configura la ARKit
         let configuration = ARWorldTrackingConfiguration()
 
-        // Run the view's session
+        //Corre la configuracion del ARkit en la escena
         sceneView.session.run(configuration)
     }
     
+    //ViewWillDisappear es llamado cuando la vista desaparecera de la pantalla
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // Pause the view's session
+        //Pausa los procesos de la session.
         sceneView.session.pause()
     }
     
@@ -71,32 +75,33 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     // MARK: - ARSKViewDelegate
     
     func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -> SKNode? {
-        // Create and configure a node for the anchor added to the view's session.
+        //Pide a ARSKViewDelagate un nodo de SpriteKit con el ancla creada
         return nil;
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
-        // Present an error message to the user
-        
+        //Muestra por consola el mensaje de error en el ARSKViewDelegate
+        print("Error ARDKViewDelegate: \(error.localizedDescription)")
     }
     
+    //Pertenecientes a ARSessionObserver
     func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        
+        // Le avisa al delegado que se ha detenido el procesamiento de Frames
     }
     
     func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required
-        
+        // Le avisa al delegado que se ha reiniciado el procesamiento de Frame
     }
     
-    // MARK: CLLocationManager
+    // MARK: CLLocationManagerDelegate
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        //Administra los errores del CoreLocation
         print(error.localizedDescription)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        //Pregunta si la autorizacion del usuario es permitida
         print("status es: \(status)")
         if status == .authorizedWhenInUse{
             locationManager.requestLocation()
@@ -104,6 +109,7 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        //Le avisa al delegado cuando hay una nueva posicion
         guard let location = locations.last else {return}
         userLocation = location
         print("La locacion es: \(userLocation)")
