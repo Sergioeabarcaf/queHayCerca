@@ -34,6 +34,11 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
         // Show statistics such as fps and node count
         sceneView.showsFPS = true
         sceneView.showsNodeCount = true
+        sceneView.showsQuadCount = true
+        sceneView.showsDrawCount = true
+        sceneView.showsPhysics = true
+        sceneView.showsFields = true
+        
         
         // Load the SKScene from 'Scene.sks'
         if let scene = SKScene(fileNamed: "Scene") {
@@ -92,7 +97,7 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        print(status)
+        print("status es: \(status)")
         if status == .authorizedWhenInUse{
             locationManager.requestLocation()
         }
@@ -101,6 +106,7 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else {return}
         userLocation = location
+        print("La locacion es: \(userLocation)")
         DispatchQueue.global().async {
             self.updateSites()
         }
