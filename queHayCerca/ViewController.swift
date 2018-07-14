@@ -158,4 +158,26 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
         }
     }
     
+    //MARK: Funciones matematicas para calcular distancia con los sites
+    
+    func deg2Rad(degrees:Double) -> Double {
+        return (degrees * Double.pi) / 180.0
+    }
+    
+    func rad2Deg(radians:Double) -> Double {
+        return (radians * 180.0)/Double.pi
+    }
+    
+    //Funcion para obtener la distancia en la tierra 
+    func direction(from p1:CLLocation, to p2:CLLocation) -> Double {
+        //atag2( sen(dif longitudes) * cos(lon2)
+        //  cos(lat1) * sen(lat2) - sen(lat1) * cos(lat2) * cos(dif longitudes)
+        let difLon = p2.coordinate.longitude - p1.coordinate.longitude
+        let y = sin(difLon) * cos(p2.coordinate.longitude)
+        let x = cos(p1.coordinate.latitude) * sin(p2.coordinate.latitude) - sin(p1.coordinate.latitude) * cos(p2.coordinate.latitude) * cos(difLon)
+        let atan_rad = atan2(y, x)
+        
+        return rad2Deg(radians: atan_rad)
+    }
+    
 }
