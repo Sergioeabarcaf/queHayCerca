@@ -123,6 +123,21 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
         }
     }
     
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        //Ejecutar bloque de manera asincrona
+        DispatchQueue.main.async {
+            //Se descartan los 2 primeros intentos del newHeading
+            self.headingStep += 1
+            print("norte magnetico: \(newHeading) , Intento: \(self.headingStep)")
+            if self.headingStep < 3 {return}
+            
+            //Con el tercer intento, se guarda en userHeading el norte magnetico, luego se detiene la actualizacion del heading y se llama a createSites
+            self.userHeading = newHeading.magneticHeading
+            self.locationManager.stopUpdatingHeading()
+            self.createSites()
+        }
+    }
+    
     func updateSites(){
         
         //Obtener la lista de sitios desde la api de wikipedia
@@ -130,14 +145,16 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
         
         guard let url = URL(string: urlStr) else {return}
         
+        //Si es al creat el date sin errores, se almacenan los siteJSON y se llama el metodo de LocationManager startUpdatingHeading
         if let date = try? Data(contentsOf: url){
             sitesJSON = JSON(date)
             print("Estos son los sites: \(sitesJSON)")
             locationManager.startUpdatingHeading()
         }
-        
-        
-        
+    }
+    
+    func createSites(){
+        print("createSites")
     }
     
 }
