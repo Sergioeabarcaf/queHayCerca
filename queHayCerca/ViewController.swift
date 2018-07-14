@@ -148,13 +148,14 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
         //Si es al creat el date sin errores, se almacenan los siteJSON y se llama el metodo de LocationManager startUpdatingHeading
         if let date = try? Data(contentsOf: url){
             sitesJSON = JSON(date)
-            print("Estos son los sites: \(sitesJSON)")
             locationManager.startUpdatingHeading()
         }
     }
     
     func createSites(){
-        print("createSites")
+        for site in sitesJSON["query"]["pages"] {
+            print(site)
+        }
     }
     
 }
