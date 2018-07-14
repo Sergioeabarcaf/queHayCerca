@@ -19,6 +19,11 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     let locationManager = CLLocationManager()
     var userLocation = CLLocation()
     
+    var sitesJSON : JSON!
+    
+    var userHeading = 0.0
+    var headingStep = 0
+    
     //ViewDidLoad prepara las configuraciones necesarias antes de que sea cargada la app
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -119,7 +124,20 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     }
     
     func updateSites(){
-        return
+        
+        //Obtener la lista de sitios desde la api de wikipedia
+        let urlStr = "https://en.wikipedia.org/w/api.php?ggscoord=\(userLocation.coordinate.latitude)%7C\(userLocation.coordinate.longitude)&action=query&prop=coordinates%7Cpageimages%7Cpageterms&colimit=50&piprop=thumbnail&pithumbsize=500&pilimit=50&wbptterms=description&generator=geosearch&ggsradius=10000&ggslimit=50&format=json"
+        
+        guard let url = URL(string: urlStr) else {return}
+        
+        if let date = try? Data(contentsOf: url){
+            sitesJSON = JSON(date)
+            print("Estos son los sites: \(sitesJSON)")
+            locationManager.startUpdatingHeading()
+        }
+        
+        
+        
     }
     
 }
