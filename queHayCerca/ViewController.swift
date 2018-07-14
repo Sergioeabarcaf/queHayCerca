@@ -20,6 +20,7 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     var userLocation = CLLocation()
     
     var sitesJSON : JSON!
+    var sites = [UUID : String]()
     
     var userHeading = 0.0
     var headingStep = 0
@@ -153,8 +154,21 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     }
     
     func createSites(){
-        for site in sitesJSON["query"]["pages"] {
-            print(site)
+        for site in sitesJSON["query"]["pages"].dictionaryValue.values {
+            //Ubicar lat y lon del site
+            let lat = site["coordinates"][0]["lat"].doubleValue
+            let lon = site["coordinates"][0]["lon"].doubleValue
+            //almacenar en una clase CLLocation la lat y lon en grados
+            let location = CLLocation(latitude: lat, longitude: lon)
+            
+            //Calcular la distancia del usuario hacia el lugar
+            let distance = Float(userLocation.distance(from: location))
+            //Calcular el azimut del usuario
+            let azimut = direction(from: userLocation, to: location)
+            //Calcular angulo entre azimut y usuario
+            let angle = azimut - userHeading
+            let angleRad = deg2Rad(degrees: angle)
+            print("Distancia: \(distance), Angulo: \(angle)")
         }
     }
     
@@ -168,7 +182,7 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
         return (radians * 180.0)/Double.pi
     }
     
-    //Funcion para obtener la distancia en la tierra 
+    //Funcion para obtener la distancia en la tierra
     func direction(from p1:CLLocation, to p2:CLLocation) -> Double {
         //atag2( sen(dif longitudes) * cos(lon2)
         //  cos(lat1) * sen(lat2) - sen(lat1) * cos(lat2) * cos(dif longitudes)
