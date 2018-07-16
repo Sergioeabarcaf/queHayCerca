@@ -155,6 +155,9 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     
     func createSites(){
         for site in sitesJSON["query"]["pages"].dictionaryValue.values {
+            //Obtener la vista de la scena
+            guard let sceneView = self.view as? ARSKView else {return}
+            
             //Ubicar lat y lon del site
             let lat = site["coordinates"][0]["lat"].doubleValue
             let lon = site["coordinates"][0]["lon"].doubleValue
@@ -169,6 +172,31 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
             let angle = azimut - userHeading
             let angleRad = deg2Rad(degrees: angle)
             print("Distancia: \(distance), Angulo: \(angle)")
+            
+            //Crear matriz de rotacion horizontal
+            let horizontalRotation = float4x4(SCNMatrix4MakeRotation(Float(angleRad), 1, 0, 0))
+            //Crear matriz de rotacion vertical
+            let verticalRotation = float4x4(SCNMatrix4MakeRotation(-0.3 + (distance/500), 0, 1, 0))
+            //Multiplicar matrices
+            let rotation = simd_mul(horizontalRotation, verticalRotation)
+            
+            //Obtener matriz de la camara
+            guard let currentFrame = sceneView.session.currentFrame else {return}
+            //Multiplicar matriz de la camara con la rotation
+            let rotationCamera = simd_mul(currentFrame.camera.transform, rotation)
+            //Crear matriz identidad y moverla para posicionar el objeto en profundidad
+            var translacion = matrix_identity_float4x4
+            translacion.columns.3.z = -(distance / 50)
+            
+            //posicion donde se coloca el ancla
+            let transform = simd_mul(rotationCamera, translacion)
+            //Crear ancla
+            let anchor = ARAnchor(transform: transform)
+            //agregar el ancla a la session
+            sceneView.session.add(anchor: anchor)
+            
+            //Agregar el ancla al diccionario site
+            sites[anchor.identifier] = site["title"].string ?? "Lugar desconocido"
         }
     }
     
