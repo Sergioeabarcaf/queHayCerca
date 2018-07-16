@@ -82,7 +82,30 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
     
     func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -> SKNode? {
         //Pide a ARSKViewDelagate un nodo de SpriteKit con el ancla creada
-        return nil;
+        
+        //Crear etiqueta con nombre del ancla
+        let labelNode = SKLabelNode(text: sites[anchor.identifier])
+        //central la etiqueta en horizontal y vertical
+        labelNode.horizontalAlignmentMode = .center
+        labelNode.verticalAlignmentMode = .center
+        
+        //Crear nuevo tamaño mayor al label
+        let newSize = labelNode.frame.size.applying(CGAffineTransform(scaleX: 1.1, y: 1.5))
+        //Crear fondo
+        let backgroundNode = SKShapeNode(rectOf: newSize, cornerRadius: 10)
+        //Color de fondo
+        let randomColor = UIColor(hue: CGFloat(GKRandomSource.sharedRandom().nextUniform()), saturation: 0.5, brightness: 0.4, alpha: 0.8)
+        //Rellenar color random en background
+        backgroundNode.fillColor = randomColor
+        //definir color de contenido
+        backgroundNode.strokeColor = randomColor.withAlphaComponent(1.0)
+        //Agrandar borde del background
+        backgroundNode.lineWidth = 2
+        
+        //agregar labelnode como hijo de background
+        backgroundNode.addChild(labelNode)
+        
+        return backgroundNode;
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
@@ -171,7 +194,6 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
             //Calcular angulo entre azimut y usuario
             let angle = azimut - userHeading
             let angleRad = deg2Rad(degrees: angle)
-            print("Distancia: \(distance), Angulo: \(angle)")
             
             //Crear matriz de rotacion horizontal
             let horizontalRotation = float4x4(SCNMatrix4MakeRotation(Float(angleRad), 1, 0, 0))
