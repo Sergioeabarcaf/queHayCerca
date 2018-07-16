@@ -208,7 +208,7 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
             let rotationCamera = simd_mul(currentFrame.camera.transform, rotation)
             //Crear matriz identidad y moverla para posicionar el objeto en profundidad
             var translacion = matrix_identity_float4x4
-            translacion.columns.3.z = -(distance / 50)
+            translacion.columns.3.z = -(distance / 1000)
             
             //posicion donde se coloca el ancla
             let transform = simd_mul(rotationCamera, translacion)
