@@ -187,50 +187,52 @@ class ViewController: UIViewController, ARSKViewDelegate, CLLocationManagerDeleg
             let lon = site["coordinates"][0]["lon"].doubleValue
             //almacenar en una clase CLLocation la lat y lon en grados
             let location = CLLocation(latitude: lat, longitude: lon)
-            print(location)
+            //print(location)
             
             //Calcular la distancia del usuario hacia el lugar
             let distance = Float(userLocation.distance(from: location))
             print("distance: \(distance)")
-            //Calcular el azimut del usuario
-            let azimut = direction(from: userLocation, to: location)
-            print("azimut: \(azimut)")
-            //Calcular angulo entre azimut y usuario
-            let angle = azimut - userHeading
-            print("angle: \(angle)")
-            let angleRad = GLKMathDegreesToRadians(Float(angle))
-            print("angleRad: \(angleRad)")
-            
-            //Crear matriz de rotacion horizontal
-            let horizontalRotation = float4x4(SCNMatrix4MakeRotation(Float(angleRad), 1, 0, 0))
-            print("horizontalRotation: \(horizontalRotation)")
-            //Crear matriz de rotacion vertical
-            let verticalRotation = float4x4(SCNMatrix4MakeRotation(-0.3 + (distance/500), 0, 1, 0))
-            print("verticalRotation: \(verticalRotation)")
-            //Multiplicar matrices
-            let rotation = simd_mul(horizontalRotation, verticalRotation)
-            print("rotation: \(rotation)")
-            
-            //Obtener matriz de la camara
-            guard let currentFrame = sceneView.session.currentFrame else {return}
-            //Multiplicar matriz de la camara con la rotation
-            let rotationCamera = simd_mul(currentFrame.camera.transform, rotation)
-            //Crear matriz identidad y moverla para posicionar el objeto en profundidad
-            var translacion = matrix_identity_float4x4
-            translacion.columns.3.z = -(distance / 1000)
-            print("translacion: \(translacion)")
-            
-            //posicion donde se coloca el ancla
-            let transform = simd_mul(rotationCamera, translacion)
-            //Crear ancla
-            let anchor = ARAnchor(transform: transform)
-            //agregar el ancla a la session
-            sceneView.session.add(anchor: anchor)
-            
-            //Agregar el ancla al diccionario site
-            sites[anchor.identifier] = site["title"].string ?? "Lugar desconocido"
-            
-            return
+            if distance <= 1000{
+                //Calcular el azimut del usuario
+                let azimut = direction(from: userLocation, to: location)
+                //print("azimut: \(azimut)")
+                //Calcular angulo entre azimut y usuario
+                let angle = azimut - userHeading
+                //print("angle: \(angle)")
+                let angleRad = GLKMathDegreesToRadians(Float(angle))
+                //print("angleRad: \(angleRad)")
+                
+                //Crear matriz de rotacion horizontal
+                let horizontalRotation = float4x4(SCNMatrix4MakeRotation(Float(angleRad), 1, 0, 0))
+                //print("horizontalRotation: \(horizontalRotation)")
+                //Crear matriz de rotacion vertical
+                let verticalRotation = float4x4(SCNMatrix4MakeRotation(-0.3 + (distance/500), 0, 1, 0))
+                //print("verticalRotation: \(verticalRotation)")
+                //Multiplicar matrices
+                let rotation = simd_mul(horizontalRotation, verticalRotation)
+                //print("rotation: \(rotation)")
+                
+                //Obtener matriz de la camara
+                guard let currentFrame = sceneView.session.currentFrame else {return}
+                //Multiplicar matriz de la camara con la rotation
+                let rotationCamera = simd_mul(currentFrame.camera.transform, rotation)
+                //Crear matriz identidad y moverla para posicionar el objeto en profundidad
+                var translacion = matrix_identity_float4x4
+                let dist = -(0.5 + (distance / 1000))
+                print(dist)
+                translacion.columns.3.z = dist
+                //print("translacion: \(translacion)")
+                
+                //posicion donde se coloca el ancla
+                let transform = simd_mul(rotationCamera, translacion)
+                //Crear ancla
+                let anchor = ARAnchor(transform: transform)
+                //agregar el ancla a la session
+                sceneView.session.add(anchor: anchor)
+                
+                //Agregar el ancla al diccionario site
+                sites[anchor.identifier] = site["title"].string ?? "Lugar desconocido"
+            }
         }
     }
     
